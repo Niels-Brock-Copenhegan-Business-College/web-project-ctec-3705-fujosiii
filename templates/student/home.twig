@@ -1,0 +1,96 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}{{ app_name }} — Discover Your Programme{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="hero" aria-labelledby="hero-heading">
+    <div class="container">
+        <div class="hero__content">
+            <span class="hero__eyebrow">University Programmes</span>
+            <h1 id="hero-heading" class="hero__title">Find Your<br><em>Future Here</em></h1>
+            <p class="hero__lead">Explore <strong>{{ ug_count }}</strong> undergraduate and <strong>{{ pg_count }}</strong> postgraduate programmes designed to launch your career.</p>
+            <div class="hero__actions">
+                <a href="/programmes?level=Undergraduate" class="btn btn--primary">Undergraduate</a>
+                <a href="/programmes?level=Postgraduate" class="btn btn--secondary">Postgraduate</a>
+            </div>
+        </div>
+        <div class="hero__search">
+            <form action="/programmes" method="GET" role="search" aria-label="Search programmes">
+                <label for="hero-search" class="sr-only">Search programmes</label>
+                <input type="search" id="hero-search" name="search" placeholder="e.g. Cyber Security, Data Science…" aria-label="Search programmes">
+                <button type="submit" aria-label="Search">Search</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Programmes -->
+{% if featured|length > 0 %}
+<section class="featured-programmes" aria-labelledby="featured-heading">
+    <div class="container">
+        <header class="section-header">
+            <h2 id="featured-heading">Featured Programmes</h2>
+            <a href="/programmes" class="link-all">View all programmes →</a>
+        </header>
+
+        <ul class="programme-grid" role="list">
+            {% for programme in featured %}
+            <li>
+                <article class="programme-card" aria-labelledby="prog-{{ programme.id }}">
+                    {% if programme.image %}
+                        <div class="programme-card__image" aria-hidden="true">
+                            <img src="{{ programme.image }}" alt="{{ programme.title }}" loading="lazy">
+                        </div>
+                    {% else %}
+                        <div class="programme-card__image programme-card__image--placeholder" aria-hidden="true">
+                            <span>◈</span>
+                        </div>
+                    {% endif %}
+
+                    <div class="programme-card__body">
+                        <span class="badge badge--{{ programme.level == 'Undergraduate' ? 'ug' : 'pg' }}">
+                            {{ programme.level }}
+                        </span>
+                        <h3 id="prog-{{ programme.id }}" class="programme-card__title">
+                            <a href="/programmes/{{ programme.slug }}">{{ programme.title }}</a>
+                        </h3>
+                        <p class="programme-card__desc">{{ programme.description|slice(0, 120) }}…</p>
+                        <div class="programme-card__meta">
+                            {% if programme.leader %}
+                                <span>{{ programme.leader.name }}</span>
+                            {% endif %}
+                            <span>{{ programme.duration_years }} year{{ programme.duration_years != 1 ? 's' }}</span>
+                        </div>
+                    </div>
+                    <div class="programme-card__footer">
+                        <a href="/programmes/{{ programme.slug }}" class="btn btn--outline btn--sm" aria-label="View details for {{ programme.title }}">View Details</a>
+                    </div>
+                </article>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endif %}
+
+<!-- Stats strip -->
+<section class="stats-strip" aria-label="Programme statistics">
+    <div class="container stats-grid">
+        <div class="stat">
+            <span class="stat__number">{{ ug_count }}</span>
+            <span class="stat__label">Undergraduate Programmes</span>
+        </div>
+        <div class="stat">
+            <span class="stat__number">{{ pg_count }}</span>
+            <span class="stat__label">Postgraduate Programmes</span>
+        </div>
+        <div class="stat">
+            <span class="stat__number">UK</span>
+            <span class="stat__label">Nationally Recognised</span>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

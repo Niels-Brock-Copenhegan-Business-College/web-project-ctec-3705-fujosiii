@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ app_name }}{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Discover undergraduate and postgraduate programmes{% endblock %}">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/app.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+<!-- Skip to content (WCAG accessibility) -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<header class="site-header" role="banner">
+    <div class="container header-inner">
+        <a href="/" class="site-logo" aria-label="{{ app_name }} home">
+            <span class="logo-icon" aria-hidden="true">◈</span>
+            <span class="logo-text">{{ app_name }}</span>
+        </a>
+        <nav class="main-nav" role="navigation" aria-label="Main navigation">
+            <ul role="list">
+                <li><a href="/" {% if current_route == 'home' %}aria-current="page"{% endif %}>Home</a></li>
+                <li>
+                    <a href="/programmes" {% if current_route starts with 'programme' %}aria-current="page"{% endif %}>Programmes</a>
+                    <ul class="dropdown" role="list">
+                        <li><a href="/programmes?level=Undergraduate">Undergraduate</a></li>
+                        <li><a href="/programmes?level=Postgraduate">Postgraduate</a></li>
+                    </ul>
+                </li>
+                <li><a href="/interest/manage">My Interests</a></li>
+            </ul>
+        </nav>
+        <button class="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Toggle navigation">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</header>
+
+<main id="main-content" tabindex="-1">
+    {% if session.flash.success is defined %}
+        <div class="alert alert--success" role="alert" aria-live="polite">
+            <span class="alert__icon" aria-hidden="true">✓</span>
+            {{ session.flash.success }}
+        </div>
+    {% endif %}
+    {% if session.flash.error is defined %}
+        <div class="alert alert--error" role="alert" aria-live="assertive">
+            <span class="alert__icon" aria-hidden="true">⚠</span>
+            {{ session.flash.error }}
+        </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer" role="contentinfo">
+    <div class="container footer-inner">
+        <div class="footer-brand">
+            <span class="logo-icon" aria-hidden="true">◈</span>
+            <span>{{ app_name }}</span>
+        </div>
+        <p class="footer-copy">© {{ "now"|date("Y") }} University. All rights reserved.</p>
+        <nav aria-label="Footer navigation">
+            <a href="/programmes">Programmes</a>
+            <a href="/interest/manage">My Interests</a>
+        </nav>
+    </div>
+</footer>
+
+<script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+{% extends 'layouts/admin.twig' %}
+{% set active_nav = 'programmes' %}
+
+{% block page_title %}{{ programme ? 'Edit Programme' : 'New Programme' }}{% endblock %}
+
+{% block content %}
+
+<form action="{{ programme ? '/admin/programmes/' ~ programme.id : '/admin/programmes' }}"
+      method="POST"
+      enctype="multipart/form-data"
+      novalidate
+      aria-label="{{ programme ? 'Edit' : 'Create' }} programme form">
+
+    <div class="form-grid">
+
+        <!-- Left column -->
+        <div class="form-col form-col--main">
+
+            <div class="form-group">
+                <label for="title">Programme Title <span aria-hidden="true">*</span></label>
+                <input type="text" id="title" name="title"
+                       value="{{ programme ? programme.title|e : '' }}"
+                       required aria-required="true">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="level">Level <span aria-hidden="true">*</span></label>
+                    <select id="level" name="level" required aria-required="true">
+                        <option value="">— Select —</option>
+                        <option value="Undergraduate" {{ programme and programme.level == 'Undergraduate' ? 'selected' }}>Undergraduate</option>
+                        <option value="Postgraduate" {{ programme and programme.level == 'Postgraduate' ? 'selected' }}>Postgraduate</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="duration_years">Duration (years)</label>
+                    <input type="number" id="duration_years" name="duration_years"
+                           value="{{ programme ? programme.duration_years : 3 }}"
+                           min="1" max="6">
+                </div>
+
+                <div class="form-group">
+                    <label for="ucas_code">UCAS Code</label>
+                    <input type="text" id="ucas_code" name="ucas_code"
+                           value="{{ programme ? programme.ucas_code|e : '' }}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description <span aria-hidden="true">*</span></label>
+                <textarea id="description" name="description" rows="6"
+                          required aria-required="true">{{ programme ? programme.description|e : '' }}</textarea>
+            </div>
+
+            {% if programme and modules is defined %}
+            <div class="form-group">
+                <label>Modules</label>
+                <div id="module-assignments">
+                    {% for pm in programme.programmeModules %}
+                    <div class="module-row" data-index="{{ loop.index0 }}">
+                        <select name="modules[]" aria-label="Module">
+                            {% for module in modules %}
+                            <option value="{{ module.id }}" {{ pm.module_id == module.id ? 'selected' }}>
+                                {{ module.code }} — {{ module.title }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <label>
+                            Year
+                            <input type="number" name="module_years[]" value="{{ pm.year }}" min="1" max="6" style="width:60px">
+                        </label>
+                        <button type="button" class="btn btn--sm btn--danger remove-module-row">✕</button>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" id="add-module-row" class="btn btn--sm btn--outline" data-modules="{{ modules|json_encode }}">
+                    + Add Module
+                </button>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- Right column -->
+        <div class="form-col form-col--side">
+
+            <div class="form-group">
+                <label for="leader_id">Programme Leader</label>
+                <select id="leader_id" name="leader_id">
+                    <option value="">— None —</option>
+                    {% for member in staff %}
+                    <option value="{{ member.id }}" {{ programme and programme.leader_id == member.id ? 'selected' }}>
+                        {{ member.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Programme Image</label>
+                {% if programme and programme.image %}
+                    <img src="{{ programme.image }}" alt="Current image" class="current-image">
+                {% endif %}
+                <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/webp">
+                <small>JPEG, PNG or WebP. Max 5MB.</small>
+            </div>
+
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="is_published" value="1"
+                           {{ programme and programme.is_published ? 'checked' }}>
+                    <span>Published (visible to students)</span>
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn--primary btn--full">
+                    {{ programme ? 'Save Changes' : 'Create Programme' }}
+                </button>
+                <a href="/admin/programmes" class="btn btn--outline btn--full">Cancel</a>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+{% endblock %}

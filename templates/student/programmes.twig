@@ -1,0 +1,110 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Programmes — {{ app_name }}{% endblock %}
+{% block meta_description %}Browse all undergraduate and postgraduate degree programmes{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <div class="container">
+        <h1>{{ level ? level ~ ' Programmes' : 'All Programmes' }}</h1>
+        <p>{{ programmes|length }} programme{{ programmes|length != 1 ? 's' }} available</p>
+    </div>
+</section>
+
+<div class="container programmes-layout">
+
+    <!-- Filters sidebar -->
+    <aside class="filters" aria-label="Filter programmes">
+        <h2 class="filters__heading">Filter</h2>
+
+        <form action="/programmes" method="GET" id="filter-form" aria-label="Programme filters">
+            <fieldset>
+                <legend>Level</legend>
+                <label class="radio-label">
+                    <input type="radio" name="level" value="" {% if not level %}checked{% endif %} onchange="this.form.submit()">
+                    <span>All</span>
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="level" value="Undergraduate" {% if level == 'Undergraduate' %}checked{% endif %} onchange="this.form.submit()">
+                    <span>Undergraduate</span>
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="level" value="Postgraduate" {% if level == 'Postgraduate' %}checked{% endif %} onchange="this.form.submit()">
+                    <span>Postgraduate</span>
+                </label>
+            </fieldset>
+
+            {% if search %}
+                <input type="hidden" name="search" value="{{ search|e }}">
+            {% endif %}
+        </form>
+
+        {% if search or level %}
+            <a href="/programmes" class="clear-filters">✕ Clear filters</a>
+        {% endif %}
+    </aside>
+
+    <!-- Main results -->
+    <div class="programmes-results">
+
+        <!-- Search bar -->
+        <form action="/programmes" method="GET" role="search" class="search-bar" aria-label="Search programmes">
+            {% if level %}<input type="hidden" name="level" value="{{ level }}">{% endif %}
+            <label for="programme-search" class="sr-only">Search programmes</label>
+            <input type="search" id="programme-search" name="search" value="{{ search|e }}" placeholder="Search by keyword…" aria-label="Search programmes">
+            <button type="submit">Search</button>
+        </form>
+
+        {% if search %}
+            <p class="results-info" aria-live="polite">
+                Showing results for "<strong>{{ search|e }}</strong>"
+                {% if level %} in <strong>{{ level }}</strong>{% endif %}
+            </p>
+        {% endif %}
+
+        {% if programmes|length == 0 %}
+            <div class="empty-state" role="status">
+                <p>No programmes found. <a href="/programmes">Clear all filters</a></p>
+            </div>
+        {% else %}
+            <ul class="programme-grid programme-grid--list" role="list">
+                {% for programme in programmes %}
+                <li>
+                    <article class="programme-card programme-card--horizontal" aria-labelledby="prog-list-{{ programme.id }}">
+                        {% if programme.image %}
+                            <div class="programme-card__image" aria-hidden="true">
+                                <img src="{{ programme.image }}" alt="" loading="lazy">
+                            </div>
+                        {% endif %}
+                        <div class="programme-card__body">
+                            <div class="programme-card__tags">
+                                <span class="badge badge--{{ programme.level == 'Undergraduate' ? 'ug' : 'pg' }}">{{ programme.level }}</span>
+                                {% if programme.ucas_code %}
+                                    <span class="badge badge--neutral">UCAS: {{ programme.ucas_code }}</span>
+                                {% endif %}
+                            </div>
+                            <h2 id="prog-list-{{ programme.id }}" class="programme-card__title">
+                                <a href="/programmes/{{ programme.slug }}">{{ programme.title }}</a>
+                            </h2>
+                            <p class="programme-card__desc">{{ programme.description|slice(0, 160) }}…</p>
+                            <div class="programme-card__meta">
+                                {% if programme.leader %}
+                                    <span>Programme Leader: {{ programme.leader.name }}</span>
+                                {% endif %}
+                                <span>Duration: {{ programme.duration_years }} year{{ programme.duration_years != 1 ? 's' }}</span>
+                            </div>
+                        </div>
+                        <div class="programme-card__action">
+                            <a href="/programmes/{{ programme.slug }}" class="btn btn--primary" aria-label="View {{ programme.title }}">View →</a>
+                        </div>
+                    </article>
+                </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

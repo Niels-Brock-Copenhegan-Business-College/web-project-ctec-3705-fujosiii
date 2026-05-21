@@ -1,0 +1,56 @@
+{% extends 'layouts/base.twig' %}
+{% block title %}My Interests — {{ app_name }}{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <div class="container">
+        <h1>My Interests</h1>
+        <p>Programmes you've registered interest in.</p>
+    </div>
+</section>
+
+<div class="container" style="padding: 3rem 1.5rem; max-width: 700px">
+
+    {% if not email %}
+        <div class="empty-state">
+            <p>You haven't registered interest in any programmes yet.</p>
+            <a href="/programmes" class="btn btn--primary" style="margin-top:1rem">Browse Programmes</a>
+        </div>
+
+    {% elseif registrations|length == 0 %}
+        <p>No active registrations for <strong>{{ email }}</strong>.</p>
+        <a href="/programmes" class="btn btn--primary" style="margin-top:1rem">Browse Programmes</a>
+
+    {% else %}
+        <p>Showing registrations for <strong>{{ email }}</strong>.</p>
+
+        <ul style="list-style:none; margin-top:1.5rem; display:flex; flex-direction:column; gap:1rem">
+            {% for reg in registrations %}
+            <li style="background:var(--clr-surface); border:1px solid var(--clr-border); border-radius:var(--radius); padding:1.25rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap">
+                <div>
+                    {% if reg.programme %}
+                        <span class="badge badge--{{ reg.programme.level == 'Undergraduate' ? 'ug' : 'pg' }}">{{ reg.programme.level }}</span>
+                        <strong style="display:block; margin-top:.35rem">{{ reg.programme.title }}</strong>
+                        <small style="color:var(--clr-muted)">Registered {{ reg.created_at|date('d M Y') }}</small>
+                    {% endif %}
+                </div>
+                <div style="display:flex; gap:.5rem">
+                    {% if reg.programme %}
+                        <a href="/programmes/{{ reg.programme.slug }}" class="btn btn--sm btn--outline">View</a>
+                        <form action="/interest/withdraw" method="POST">
+                            <input type="hidden" name="programme_id" value="{{ reg.programme_id }}">
+                            <input type="hidden" name="email" value="{{ email }}">
+                            <button type="submit" class="btn btn--sm btn--danger"
+                                    onclick="return confirm('Withdraw interest?')">Withdraw</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+</div>
+
+{% endblock %}

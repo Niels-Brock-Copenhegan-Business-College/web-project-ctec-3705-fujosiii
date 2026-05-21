@@ -1,0 +1,47 @@
+{% extends 'layouts/admin.twig' %}
+{% set active_nav = 'modules' %}
+
+{% block page_title %}Modules{% endblock %}
+
+{% block content %}
+
+<div class="toolbar">
+    <a href="/admin/modules/create" class="btn btn--primary">+ New Module</a>
+</div>
+
+<div class="table-wrap">
+    <table class="data-table" aria-label="Modules list">
+        <thead>
+            <tr>
+                <th scope="col">Code</th>
+                <th scope="col">Title</th>
+                <th scope="col">Module Leader</th>
+                <th scope="col">Credits</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for module in modules %}
+            <tr>
+                <td><code class="module-code">{{ module.code }}</code></td>
+                <td><strong>{{ module.title }}</strong></td>
+                <td>{{ module.leader ? module.leader.name : '—' }}</td>
+                <td>{{ module.credits }}</td>
+                <td class="actions">
+                    <a href="/admin/modules/{{ module.id }}/edit" class="btn btn--sm btn--outline">Edit</a>
+                    <form action="/admin/modules/{{ module.id }}/delete" method="POST" style="display:inline">
+                        <button type="submit" class="btn btn--sm btn--danger"
+                                onclick="return confirm('Delete this module? It will be removed from all programmes.')">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" class="empty-row">No modules yet. <a href="/admin/modules/create">Create one</a>.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

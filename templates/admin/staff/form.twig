@@ -1,0 +1,76 @@
+{% extends 'layouts/admin.twig' %}
+{% set active_nav = 'staff' %}
+
+{% block page_title %}{{ member ? 'Edit Staff Member' : 'Add Staff Member' }}{% endblock %}
+
+{% block content %}
+
+<form action="{{ member ? '/admin/staff/' ~ member.id : '/admin/staff' }}"
+      method="POST"
+      enctype="multipart/form-data"
+      novalidate
+      aria-label="{{ member ? 'Edit' : 'Add' }} staff member form">
+
+    <div class="form-grid">
+
+        <!-- Left column -->
+        <div class="form-col form-col--main">
+
+            <div class="form-row">
+                <div class="form-group" style="grid-column: span 2">
+                    <label for="name">Full Name <span aria-hidden="true">*</span></label>
+                    <input type="text" id="name" name="name"
+                           value="{{ member ? member.name|e : '' }}"
+                           required aria-required="true"
+                           autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address <span aria-hidden="true">*</span></label>
+                    <input type="email" id="email" name="email"
+                           value="{{ member ? member.email|e : '' }}"
+                           required aria-required="true"
+                           autocomplete="email">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="title">Job Title / Role</label>
+                <input type="text" id="title" name="title"
+                       value="{{ member ? member.title|e : '' }}"
+                       placeholder="e.g. Programme Leader, Computer Science">
+            </div>
+
+            <div class="form-group">
+                <label for="bio">Biography</label>
+                <textarea id="bio" name="bio" rows="5"
+                          placeholder="A short biography displayed on the programme page…">{{ member ? member.bio|e : '' }}</textarea>
+            </div>
+
+        </div>
+
+        <!-- Right column -->
+        <div class="form-col form-col--side">
+
+            <div class="form-group">
+                <label for="photo">Profile Photo</label>
+                {% if member and member.photo %}
+                    <img src="{{ member.photo }}" alt="{{ member.name }}" class="current-image"
+                         style="border-radius:50%; width:120px; height:120px; object-fit:cover; margin: 0 auto .75rem">
+                {% endif %}
+                <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/webp">
+                <small>JPEG, PNG or WebP. Max 5MB. Shown as circular portrait.</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn--primary btn--full">
+                    {{ member ? 'Save Changes' : 'Add Staff Member' }}
+                </button>
+                <a href="/admin/staff" class="btn btn--outline btn--full">Cancel</a>
+            </div>
+
+        </div>
+    </div>
+
+</form>
+
+{% endblock %}
