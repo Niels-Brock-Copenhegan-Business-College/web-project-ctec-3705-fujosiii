@@ -1,0 +1,58 @@
+{% extends 'layouts/admin.twig' %}
+{% set active_nav = 'staff' %}
+
+{% block page_title %}Staff{% endblock %}
+
+{% block content %}
+
+<div class="toolbar">
+    <a href="/admin/staff/create" class="btn btn--primary">+ Add Staff Member</a>
+</div>
+
+<div class="table-wrap">
+    <table class="data-table" aria-label="Staff list">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Title / Role</th>
+                <th scope="col">Programmes Led</th>
+                <th scope="col">Modules Led</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in staff %}
+            <tr>
+                <td>
+                    <div style="display:flex; align-items:center; gap:.75rem">
+                        {% if member.photo %}
+                            <img src="{{ member.photo }}" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover">
+                        {% else %}
+                            <div style="width:36px;height:36px;border-radius:50%;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:1rem">◎</div>
+                        {% endif %}
+                        <strong>{{ member.name }}</strong>
+                    </div>
+                </td>
+                <td><a href="mailto:{{ member.email }}">{{ member.email }}</a></td>
+                <td>{{ member.title ?? '—' }}</td>
+                <td>{{ member.led_programmes_count }}</td>
+                <td>{{ member.led_modules_count }}</td>
+                <td class="actions">
+                    <a href="/admin/staff/{{ member.id }}/edit" class="btn btn--sm btn--outline">Edit</a>
+                    <form action="/admin/staff/{{ member.id }}/delete" method="POST" style="display:inline">
+                        <button type="submit" class="btn btn--sm btn--danger"
+                                onclick="return confirm('Remove this staff member?')">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6" class="empty-row">No staff members yet. <a href="/admin/staff/create">Add one</a>.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

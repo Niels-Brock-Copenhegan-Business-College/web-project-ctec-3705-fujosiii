@@ -1,0 +1,47 @@
+{% extends 'layouts/admin.twig' %}
+{% set active_nav = 'dashboard' %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="stats-row">
+    <div class="stat-card">
+        <div class="stat-card__value">{{ stats.programmes }}</div>
+        <div class="stat-card__label">Total Programmes</div>
+        <div class="stat-card__sub">{{ stats.published }} published</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card__value">{{ stats.modules }}</div>
+        <div class="stat-card__label">Modules</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card__value">{{ stats.staff }}</div>
+        <div class="stat-card__label">Staff Members</div>
+    </div>
+    <div class="stat-card stat-card--highlight">
+        <div class="stat-card__value">{{ stats.interests }}</div>
+        <div class="stat-card__label">Interest Registrations</div>
+        <a href="/admin/mailing-list" class="stat-card__link">View mailing list →</a>
+    </div>
+</div>
+
+<div class="quick-actions">
+    <h2>Quick Actions</h2>
+    <div class="action-grid">
+        <a href="/admin/programmes/create" class="action-card">
+            <span aria-hidden="true">+</span> New Programme
+        </a>
+        <a href="/admin/modules/create" class="action-card">
+            <span aria-hidden="true">+</span> New Module
+        </a>
+        <a href="/admin/staff/create" class="action-card">
+            <span aria-hidden="true">+</span> Add Staff
+        </a>
+        <a href="/admin/mailing-list/export" class="action-card action-card--export">
+            <span aria-hidden="true">↓</span> Export CSV
+        </a>
+    </div>
+</div>
+
+{% endblock %}

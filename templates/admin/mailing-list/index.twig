@@ -1,0 +1,71 @@
+{% extends 'layouts/admin.twig' %}
+{% set active_nav = 'mailing-list' %}
+
+{% block page_title %}Mailing List{% endblock %}
+
+{% block content %}
+
+<div class="toolbar">
+    <form action="/admin/mailing-list" method="GET" class="toolbar__filters" aria-label="Filter interests">
+        <label for="programme_filter" class="sr-only">Filter by programme</label>
+        <select id="programme_filter" name="programme_id" onchange="this.form.submit()">
+            <option value="">All Programmes</option>
+            {% for prog in programmes %}
+            <option value="{{ prog.id }}" {{ programme_id == prog.id ? 'selected' }}>{{ prog.title }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="search_input" class="sr-only">Search</label>
+        <input type="search" id="search_input" name="search" value="{{ search|e }}" placeholder="Search name or email…">
+        <button type="submit" class="btn btn--outline">Filter</button>
+    </form>
+
+    <a href="/admin/mailing-list/export{% if programme_id %}?programme_id={{ programme_id }}{% endif %}"
+       class="btn btn--primary">
+        ↓ Export CSV
+    </a>
+</div>
+
+<p class="results-count">{{ interests|length }} registration{{ interests|length != 1 ? 's' }}</p>
+
+<div class="table-wrap">
+    <table class="data-table" aria-label="Interest registrations">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Programme</th>
+                <th scope="col">Registered</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for interest in interests %}
+            <tr>
+                <td>{{ interest.first_name }} {{ interest.last_name }}</td>
+                <td><a href="mailto:{{ interest.email }}">{{ interest.email }}</a></td>
+                <td>{{ interest.phone ?? '—' }}</td>
+                <td>
+                    {% if interest.programme %}
+                        <a href="/programmes/{{ interest.programme.slug }}" target="_blank">{{ interest.programme.title }}</a>
+                    {% else %}—{% endif %}
+                </td>
+                <td>{{ interest.created_at|date('d M Y') }}</td>
+                <td>
+                    <form action="/admin/mailing-list/{{ interest.id }}/delete" method="POST">
+                        <button type="submit" class="btn btn--sm btn--danger"
+                                onclick="return confirm('Remove this registration?')">
+                            Remove
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6" class="empty-row">No registrations found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

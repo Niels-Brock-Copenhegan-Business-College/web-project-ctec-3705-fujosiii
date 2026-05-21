@@ -1,0 +1,173 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}{{ programme.title }} — {{ app_name }}{% endblock %}
+{% block meta_description %}{{ programme.description|slice(0, 160) }}{% endblock %}
+
+{% block content %}
+
+<!-- Programme Hero -->
+<section class="prog-hero {% if not programme.image %}prog-hero--no-image{% endif %}"
+         aria-labelledby="prog-heading"
+         {% if programme.image %}style="--hero-image: url('{{ programme.image }}')"{% endif %}>
+    <div class="container prog-hero__inner">
+        <nav aria-label="Breadcrumb" class="breadcrumb">
+            <ol>
+                <li><a href="/">Home</a></li>
+                <li><a href="/programmes">Programmes</a></li>
+                <li aria-current="page">{{ programme.title }}</li>
+            </ol>
+        </nav>
+
+        <span class="badge badge--{{ programme.level == 'Undergraduate' ? 'ug' : 'pg' }} badge--lg">{{ programme.level }}</span>
+        <h1 id="prog-heading">{{ programme.title }}</h1>
+
+        <dl class="prog-meta" aria-label="Programme details">
+            <div>
+                <dt>Duration</dt>
+                <dd>{{ programme.duration_years }} year{{ programme.duration_years != 1 ? 's' }}</dd>
+            </div>
+            {% if programme.ucas_code %}
+            <div>
+                <dt>UCAS Code</dt>
+                <dd>{{ programme.ucas_code }}</dd>
+            </div>
+            {% endif %}
+            {% if programme.leader %}
+            <div>
+                <dt>Programme Leader</dt>
+                <dd>{{ programme.leader.name }}</dd>
+            </div>
+            {% endif %}
+        </dl>
+    </div>
+</section>
+
+<div class="container prog-layout">
+
+    <!-- Main content -->
+    <article class="prog-content">
+
+        <section aria-labelledby="about-heading">
+            <h2 id="about-heading">About this Programme</h2>
+            <p>{{ programme.description }}</p>
+        </section>
+
+        <!-- Modules by year -->
+        {% if modules_by_year %}
+        <section aria-labelledby="modules-heading">
+            <h2 id="modules-heading">Programme Structure</h2>
+
+            {% for year, modules in modules_by_year %}
+            <div class="year-block">
+                <h3 class="year-heading">
+                    {% if programme.level == 'Postgraduate' %}
+                        Semester {{ year }}
+                    {% else %}
+                        Year {{ year }}
+                    {% endif %}
+                </h3>
+
+                <ul class="module-list" role="list">
+                    {% for module in modules %}
+                    <li class="module-card" aria-labelledby="mod-{{ module.id }}">
+                        {% if module.image %}
+                            <img src="{{ module.image }}" alt="" class="module-card__img" loading="lazy" aria-hidden="true">
+                        {% endif %}
+                        <div class="module-card__body">
+                            <div class="module-card__meta">
+                                <code class="module-code">{{ module.code }}</code>
+                                {% if module.credits %}
+                                    <span class="module-credits">{{ module.credits }} credits</span>
+                                {% endif %}
+                            </div>
+                            <h4 id="mod-{{ module.id }}">{{ module.title }}</h4>
+                            {% if module.description %}
+                                <p>{{ module.description|slice(0, 100) }}{% if module.description|length > 100 %}…{% endif %}</p>
+                            {% endif %}
+                            {% if module.leader %}
+                                <p class="module-leader">
+                                    <span aria-label="Module leader">👤</span>
+                                    {{ module.leader.title ? module.leader.title ~ ' ' }}{{ module.leader.name }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        <!-- Staff section -->
+        {% if programme.leader %}
+        <section aria-labelledby="staff-heading">
+            <h2 id="staff-heading">Meet the Team</h2>
+            <div class="staff-card" aria-labelledby="leader-name">
+                {% if programme.leader.photo %}
+                    <img src="{{ programme.leader.photo }}" alt="{{ programme.leader.name }}" class="staff-card__photo">
+                {% else %}
+                    <div class="staff-card__photo staff-card__photo--placeholder" aria-hidden="true">◎</div>
+                {% endif %}
+                <div>
+                    <h3 id="leader-name">{{ programme.leader.name }}</h3>
+                    {% if programme.leader.title %}<p class="staff-card__role">{{ programme.leader.title }}</p>{% endif %}
+                    {% if programme.leader.bio %}<p>{{ programme.leader.bio }}</p>{% endif %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+    </article>
+
+    <!-- Interest sidebar -->
+    <aside class="interest-sidebar" aria-label="Register your interest">
+        <div class="interest-box">
+            <h2>Register Your Interest</h2>
+            <p>Get updates on open days, deadlines, and more for this programme.</p>
+
+            {% if already_registered %}
+                <div class="alert alert--success" role="status">
+                    <strong>You're registered!</strong> We'll keep you updated.
+                </div>
+
+                <form action="/interest/withdraw" method="POST" aria-label="Withdraw interest">
+                    <input type="hidden" name="programme_id" value="{{ programme.id }}">
+                    <input type="hidden" name="email" value="{{ session.interest_email }}">
+                    <button type="submit" class="btn btn--outline btn--danger btn--full"
+                            onclick="return confirm('Are you sure you want to withdraw your interest?')">
+                        Withdraw Interest
+                    </button>
+                </form>
+            {% else %}
+                <form action="/interest/register" method="POST" novalidate aria-label="Interest registration form">
+                    <div class="form-group">
+                        <label for="first_name">First Name <span aria-hidden="true">*</span></label>
+                        <input type="text" id="first_name" name="first_name"
+                               required autocomplete="given-name" aria-required="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name <span aria-hidden="true">*</span></label>
+                        <input type="text" id="last_name" name="last_name"
+                               required autocomplete="family-name" aria-required="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address <span aria-hidden="true">*</span></label>
+                        <input type="email" id="email" name="email"
+                               required autocomplete="email" aria-required="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone <span class="optional">(optional)</span></label>
+                        <input type="tel" id="phone" name="phone" autocomplete="tel">
+                    </div>
+                    <input type="hidden" name="programme_id" value="{{ programme.id }}">
+
+                    <button type="submit" class="btn btn--primary btn--full">Register Interest</button>
+                </form>
+            {% endif %}
+        </div>
+    </aside>
+
+</div>
+
+{% endblock %}
