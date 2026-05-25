@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-// This controller handles all administrative functions for the Student Course Hub application, including managing programmes, modules, staff, and the mailing list. It provides methods for listing, creating, editing, and deleting these entities, as well as a dashboard overview and CSV export functionality for the mailing list.
+
 namespace App\Controllers;
 
 use App\Models\Admin;
@@ -21,6 +21,68 @@ class AdminController
         private Twig $view,
         private Database $db
     ) {}
+
+    // ── Staff Accounts ────────────────────────────────────────────────────────
+
+    public function staffAccounts(Request $request, Response $response): Response
+    {
+        $accounts = Admin::where('role', 'staff')->orderBy('name')->get();
+        return $this->view->render($response, 'admin/staff-accounts/index.twig', compact('accounts'));
+    }
+
+    public function createStaffAccount(Request $request, Response $response): Response
+    {
+        // Only show staff members who don't already have a login
+        $existingEmails = Admin::where('role', 'staff')->pluck('email')->toArray();
+        $staffMembers   = Staff::whereNotIn('email', $existingEmails)->orderBy('name')->get();
+
+        return $this->view->render($response, 'admin/staff-accounts/form.twig', [
+            'staff_members' => $staffMembers,
+        ]);
+    }
+
+    public function storeStaffAccount(Request $request, Response $response): Response
+    {
+        $data     = $request->getParsedBody();
+        $staffId  = (int) ($data['staff_id'] ?? 0);
+        $password = $data['password'] ?? '';
+        $confirm  = $data['password_confirm'] ?? '';
+
+        $errors = [];
+        $member = Staff::find($staffId);
+
+        if (!$member)          $errors[] = 'Please select a valid staff member.';
+        if (strlen($password) < 8) $errors[] = 'Password must be at least 8 characters.';
+        if ($password !== $confirm) $errors[] = 'Passwords do not match.';
+        if ($member && Admin::where('email', $member->email)->exists()) {
+            $errors[] = 'This staff member already has a login account.';
+        }
+
+        if ($errors) {
+            $_SESSION['flash']['error'] = implode(' ', $errors);
+            return $response->withHeader('Location', '/admin/staff-accounts/create')->withStatus(302);
+        }
+
+        Admin::create([
+            'name'     => $member->name,
+            'email'    => $member->email,
+            'password' => password_hash($password, PASSWORD_BCRYPT),
+            'role'     => 'staff',
+        ]);
+
+        $_SESSION['flash']['success'] = "Login account created for {$member->name}.";
+        return $response->withHeader('Location', '/admin/staff-accounts')->withStatus(302);
+    }
+
+    public function deleteStaffAccount(Request $request, Response $response, array $args): Response
+    {
+        $account = Admin::where('id', $args['id'])->where('role', 'staff')->firstOrFail();
+        $name    = $account->name;
+        $account->delete();
+
+        $_SESSION['flash']['success'] = "Login account for {$name} has been removed.";
+        return $response->withHeader('Location', '/admin/staff-accounts')->withStatus(302);
+    }
 
     // ── Dashboard ─────────────────────────────────────────────────────────────
 

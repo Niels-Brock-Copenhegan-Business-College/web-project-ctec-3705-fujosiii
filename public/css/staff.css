@@ -1,0 +1,124 @@
+/* ── Staff Portal CSS ──────────────────────────────────────────── */
+
+/* Accent the sidebar differently from admin */
+.staff-sidebar { background: #1a3a6b; }
+.staff-sidebar .sidebar-brand { border-bottom-color: rgba(255,255,255,.1); }
+.staff-sidebar .nav-item.active { border-left-color: #e8a020; }
+
+/* Staff profile card on dashboard */
+.staff-profile-card {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: var(--clr-surface);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+}
+.staff-profile-card__photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.staff-profile-card__placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #9ca3af;
+    flex-shrink: 0;
+}
+.staff-profile-card h2 { font-size: 1.3rem; font-weight: 700; }
+.staff-profile-card__role  { color: var(--clr-muted); font-size: .92rem; margin-top: .2rem; }
+.staff-profile-card__email { color: var(--clr-primary); font-size: .88rem; margin-top: .15rem; }
+
+/* Module detail cards */
+.module-detail-card {
+    background: var(--clr-surface);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+}
+.module-detail-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: .75rem;
+}
+.module-detail-card__title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: .35rem;
+}
+.module-detail-card__desc {
+    color: var(--clr-muted);
+    font-size: .92rem;
+    margin-bottom: .75rem;
+}
+.module-credits-badge {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: .25rem .75rem;
+    border-radius: 999px;
+    font-size: .82rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.module-detail-card__programmes h3 {
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--clr-muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: .5rem;
+}
+.module-detail-card__programmes ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+}
+.module-detail-card__programmes li {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .92rem;
+}
+
+/* Programme detail cards */
+.programme-detail-card {
+    background: var(--clr-surface);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+}
+.programme-detail-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+.programme-detail-card__header h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-top: .35rem;
+}
+.programme-detail-card__header a {
+    text-decoration: none;
+    color: var(--clr-ink);
+}
+.programme-detail-card__header a:hover { color: var(--clr-primary); }
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 4rem 0;
+    color: var(--clr-muted);
+}

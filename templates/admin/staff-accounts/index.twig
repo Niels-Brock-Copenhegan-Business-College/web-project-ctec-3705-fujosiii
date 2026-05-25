@@ -1,0 +1,51 @@
+{% extends 'layouts/admin.twig' %}
+{% set active_nav = 'staff-accounts' %}
+
+{% block page_title %}Staff Login Accounts{% endblock %}
+
+{% block content %}
+
+<div class="toolbar">
+    <p style="color:var(--clr-muted); font-size:.92rem">
+        Staff accounts can log in at <code>/auth/login</code> and access their personal staff portal.
+    </p>
+    <a href="/admin/staff-accounts/create" class="btn btn--primary">+ Create Account</a>
+</div>
+
+<div class="table-wrap">
+    <table class="data-table" aria-label="Staff login accounts">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Role</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for account in accounts %}
+            <tr>
+                <td><strong>{{ account.name }}</strong></td>
+                <td>{{ account.email }}</td>
+                <td><span class="badge badge--neutral">Staff</span></td>
+                <td>
+                    <form action="/admin/staff-accounts/{{ account.id }}/delete" method="POST">
+                        <button type="submit" class="btn btn--sm btn--danger"
+                                onclick="return confirm('Remove login access for {{ account.name }}?')">
+                            Remove Access
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="empty-row">
+                    No staff accounts yet. <a href="/admin/staff-accounts/create">Create one</a>.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

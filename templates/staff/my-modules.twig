@@ -1,0 +1,63 @@
+{% extends 'layouts/staff.twig' %}
+{% set active_nav = 'modules' %}
+
+{% block page_title %}My Modules{% endblock %}
+
+{% block content %}
+
+{% if modules|length == 0 %}
+    <div class="empty-state" role="status">
+        <p>You are not currently assigned as a leader for any modules.</p>
+    </div>
+{% else %}
+
+<p style="color:var(--clr-muted); margin-bottom:1.5rem">
+    You are the module leader for <strong>{{ modules|length }}</strong> module{{ modules|length != 1 ? 's' }}.
+</p>
+
+<div style="display:flex; flex-direction:column; gap:1.5rem">
+    {% for module in modules %}
+    <div class="module-detail-card">
+        <div class="module-detail-card__header">
+            <div>
+                <code class="module-code">{{ module.code }}</code>
+                <h2 class="module-detail-card__title">{{ module.title }}</h2>
+            </div>
+            <span class="module-credits-badge">{{ module.credits }} credits</span>
+        </div>
+
+        {% if module.description %}
+            <p class="module-detail-card__desc">{{ module.description }}</p>
+        {% endif %}
+
+        {% if module.programmeModules|length > 0 %}
+        <div class="module-detail-card__programmes">
+            <h3>Included in these programmes:</h3>
+            <ul role="list">
+                {% for pm in module.programmeModules %}
+                {% if pm.programme %}
+                <li>
+                    <span class="badge badge--{{ pm.programme.level == 'Undergraduate' ? 'ug' : 'pg' }}">
+                        {{ pm.programme.level }}
+                    </span>
+                    <a href="/programmes/{{ pm.programme.slug }}" target="_blank">
+                        {{ pm.programme.title }}
+                    </a>
+                    <span style="color:var(--clr-muted); font-size:.85rem">— Year {{ pm.year }}</span>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+            <p style="color:var(--clr-muted); font-size:.9rem; margin-top:.75rem">
+                This module is not currently assigned to any programme.
+            </p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+{% endif %}
+
+{% endblock %}

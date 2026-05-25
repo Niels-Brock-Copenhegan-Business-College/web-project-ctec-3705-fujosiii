@@ -1,0 +1,59 @@
+{% extends 'layouts/admin.twig' %}
+{% set active_nav = 'staff-accounts' %}
+
+{% block page_title %}Create Staff Login{% endblock %}
+
+{% block content %}
+
+<form action="/admin/staff-accounts" method="POST" novalidate
+      style="max-width:520px"
+      aria-label="Create staff login form">
+
+    <p style="color:var(--clr-muted); margin-bottom:1.5rem; font-size:.92rem">
+        Select a staff member to give them login access to the Staff Portal.
+        Their email must match an existing staff profile.
+    </p>
+
+    <div class="form-group">
+        <label for="staff_id">Staff Member <span aria-hidden="true">*</span></label>
+        {% if staff_members|length == 0 %}
+            <p style="color:var(--clr-muted); font-size:.9rem">
+                All staff members already have login accounts, or no staff profiles exist.
+                <a href="/admin/staff">Manage staff profiles</a>.
+            </p>
+        {% else %}
+            <select id="staff_id" name="staff_id" required aria-required="true">
+                <option value="">— Select staff member —</option>
+                {% for member in staff_members %}
+                <option value="{{ member.id }}">{{ member.name }} ({{ member.email }})</option>
+                {% endfor %}
+            </select>
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password <span aria-hidden="true">*</span></label>
+        <input type="password" id="password" name="password"
+               required aria-required="true"
+               minlength="8"
+               autocomplete="new-password">
+        <small>Minimum 8 characters.</small>
+    </div>
+
+    <div class="form-group">
+        <label for="password_confirm">Confirm Password <span aria-hidden="true">*</span></label>
+        <input type="password" id="password_confirm" name="password_confirm"
+               required aria-required="true"
+               autocomplete="new-password">
+    </div>
+
+    <div style="display:flex; gap:.75rem; margin-top:1rem">
+        <button type="submit" class="btn btn--primary" {% if staff_members|length == 0 %}disabled{% endif %}>
+            Create Login
+        </button>
+        <a href="/admin/staff-accounts" class="btn btn--outline">Cancel</a>
+    </div>
+
+</form>
+
+{% endblock %}

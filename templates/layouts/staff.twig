@@ -3,54 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Admin{% endblock %} — {{ app_name }}</title>
+    <title>{% block title %}Staff Portal{% endblock %} — {{ app_name }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/staff.css">
 </head>
 <body class="admin-body">
 
-<a href="#admin-content" class="skip-link">Skip to main content</a>
+<a href="#staff-content" class="skip-link">Skip to main content</a>
 
 <div class="admin-layout">
 
     <!-- Sidebar -->
-    <aside class="admin-sidebar" role="navigation" aria-label="Admin navigation">
+    <aside class="admin-sidebar staff-sidebar" role="navigation" aria-label="Staff navigation">
         <div class="sidebar-brand">
             <span class="logo-icon" aria-hidden="true">◈</span>
-            <span>Admin Panel</span>
+            <span>Staff Portal</span>
         </div>
 
         <nav>
             <ul role="list">
                 <li>
-                    <a href="/admin" class="nav-item {% if active_nav == 'dashboard' %}active{% endif %}">
+                    <a href="/staff/dashboard" class="nav-item {% if active_nav == 'dashboard' %}active{% endif %}">
                         <span class="nav-icon" aria-hidden="true">⊞</span>Dashboard
                     </a>
                 </li>
                 <li>
-                    <a href="/admin/programmes" class="nav-item {% if active_nav == 'programmes' %}active{% endif %}">
-                        <span class="nav-icon" aria-hidden="true">◉</span>Programmes
+                    <a href="/staff/my-modules" class="nav-item {% if active_nav == 'modules' %}active{% endif %}">
+                        <span class="nav-icon" aria-hidden="true">◫</span>My Modules
                     </a>
                 </li>
                 <li>
-                    <a href="/admin/modules" class="nav-item {% if active_nav == 'modules' %}active{% endif %}">
-                        <span class="nav-icon" aria-hidden="true">◫</span>Modules
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/staff" class="nav-item {% if active_nav == 'staff' %}active{% endif %}">
-                        <span class="nav-icon" aria-hidden="true">◎</span>Staff
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/staff-accounts" class="nav-item {% if active_nav == 'staff-accounts' %}active{% endif %}">
-                        <span class="nav-icon" aria-hidden="true">🔑</span>Staff Logins
-                    </a>
-                </li>
-                <li>
-                    <a href="/admin/mailing-list" class="nav-item {% if active_nav == 'mailing-list' %}active{% endif %}">
-                        <span class="nav-icon" aria-hidden="true">◑</span>Mailing List
+                    <a href="/staff/my-programmes" class="nav-item {% if active_nav == 'programmes' %}active{% endif %}">
+                        <span class="nav-icon" aria-hidden="true">◉</span>My Programmes
                     </a>
                 </li>
             </ul>
@@ -67,11 +53,11 @@
     <!-- Main content -->
     <div class="admin-main">
         <header class="admin-topbar">
-            <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+            <h1>{% block page_title %}Staff Portal{% endblock %}</h1>
             <a href="/" target="_blank" class="btn btn--outline btn--sm">↗ View Site</a>
         </header>
 
-        <main id="admin-content" tabindex="-1" class="admin-content">
+        <main id="staff-content" tabindex="-1" class="admin-content">
 
             {% if session.flash.success is defined %}
                 <div class="alert alert--success" role="alert">✓ {{ session.flash.success }}</div>

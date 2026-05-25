@@ -1,5 +1,5 @@
 <?php
-
+// This is the configuration file for Phinx, the database migration tool used in the Student Course Hub application. It defines the paths for migrations and seeds, as well as the database connection settings for the development environment.
 return [
     'paths' => [
         'migrations' => '%%PHINX_CONFIG_DIR%%/database/migrations',

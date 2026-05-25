@@ -10,25 +10,23 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Response;
 
-class AuthMiddleware implements MiddlewareInterface
+class StaffMiddleware implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        // Must be logged in
         if (empty($_SESSION['admin_id'])) {
-            $_SESSION['flash']['error'] = 'Please log in to access the admin area.';
+            $_SESSION['flash']['error'] = 'Please log in to access this area.';
             $_SESSION['intended_url'] = (string) $request->getUri();
 
             $response = new Response();
-            return $response
-                ->withHeader('Location', '/auth/login')
-                ->withStatus(302);
+            return $response->withHeader('Location', '/auth/login')->withStatus(302);
         }
 
-        // Staff role cannot access admin area — redirect to staff dashboard
-        if (($_SESSION['admin_role'] ?? '') === 'staff') {
-            $_SESSION['flash']['error'] = 'You do not have permission to access the admin area.';
+        // Must be staff or admin role
+        if (!in_array($_SESSION['admin_role'] ?? '', ['staff', 'admin'])) {
             $response = new Response();
-            return $response->withHeader('Location', '/staff/dashboard')->withStatus(302);
+            return $response->withHeader('Location', '/auth/login')->withStatus(302);
         }
 
         return $handler->handle($request);

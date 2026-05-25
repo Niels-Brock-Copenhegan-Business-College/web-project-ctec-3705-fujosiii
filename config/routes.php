@@ -8,7 +8,9 @@ use App\Controllers\StudentController;
 use App\Controllers\AdminController;
 use App\Controllers\AuthController;
 use App\Controllers\InterestController;
+use App\Controllers\StaffController;
 use App\Middleware\AuthMiddleware;
+use App\Middleware\StaffMiddleware;
 use App\Middleware\GuestMiddleware;
 
 return function (App $app) {
@@ -33,6 +35,13 @@ return function (App $app) {
         $group->post('/login', [AuthController::class, 'login']);
         $group->post('/logout', [AuthController::class, 'logout'])->setName('auth.logout');
     });
+
+    // ── Staff Routes (protected - staff + admin) ─────────────────────────────
+    $app->group('/staff', function ($group) {
+        $group->get('/dashboard', [StaffController::class, 'dashboard'])->setName('staff.dashboard');
+        $group->get('/my-modules', [StaffController::class, 'myModules'])->setName('staff.modules');
+        $group->get('/my-programmes', [StaffController::class, 'myProgrammes'])->setName('staff.programmes');
+    })->add(new StaffMiddleware());
 
     // ── Admin Routes (protected) ─────────────────────────────────────────────
     $app->group('/admin', function ($group) {
@@ -63,6 +72,12 @@ return function (App $app) {
         $group->get('/staff/{id}/edit', [AdminController::class, 'editStaff'])->setName('admin.staff.edit');
         $group->post('/staff/{id}', [AdminController::class, 'updateStaff'])->setName('admin.staff.update');
         $group->post('/staff/{id}/delete', [AdminController::class, 'deleteStaff'])->setName('admin.staff.delete');
+
+        // Staff accounts (admin managing login accounts for staff)
+        $group->get('/staff-accounts', [AdminController::class, 'staffAccounts'])->setName('admin.staff-accounts');
+        $group->get('/staff-accounts/create', [AdminController::class, 'createStaffAccount'])->setName('admin.staff-accounts.create');
+        $group->post('/staff-accounts', [AdminController::class, 'storeStaffAccount'])->setName('admin.staff-accounts.store');
+        $group->post('/staff-accounts/{id}/delete', [AdminController::class, 'deleteStaffAccount'])->setName('admin.staff-accounts.delete');
 
         // Mailing lists
         $group->get('/mailing-list', [AdminController::class, 'mailingList'])->setName('admin.mailing-list');

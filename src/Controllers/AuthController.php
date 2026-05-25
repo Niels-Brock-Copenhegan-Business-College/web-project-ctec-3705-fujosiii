@@ -50,7 +50,12 @@ class AuthController
         $_SESSION['admin_name'] = $admin->name;
         $_SESSION['admin_role'] = $admin->role;
 
+    if ($admin->role === 'staff') {
+        $redirect = $_SESSION['intended_url'] ?? '/staff/dashboard';
+        } 
+    else {
         $redirect = $_SESSION['intended_url'] ?? '/admin';
+        }
         unset($_SESSION['intended_url']);
 
         return $response->withHeader('Location', $redirect)->withStatus(302);

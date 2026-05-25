@@ -42,4 +42,5 @@ return [
     \App\Controllers\AdminController::class   => \DI\autowire(),
     \App\Controllers\AuthController::class    => \DI\autowire(),
     \App\Controllers\InterestController::class => \DI\autowire(),
+    \App\Controllers\StaffController::class => \DI\autowire(),
 ];

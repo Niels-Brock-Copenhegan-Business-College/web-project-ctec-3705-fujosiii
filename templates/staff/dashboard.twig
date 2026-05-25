@@ -1,0 +1,74 @@
+{% extends 'layouts/staff.twig' %}
+{% set active_nav = 'dashboard' %}
+
+{% block page_title %}Staff Dashboard{% endblock %}
+
+{% block content %}
+
+{% if staff_member %}
+
+<div class="staff-profile-card">
+    {% if staff_member.photo %}
+        <img src="{{ staff_member.photo }}" alt="{{ staff_member.name }}" class="staff-profile-card__photo">
+    {% else %}
+        <div class="staff-profile-card__photo staff-profile-card__placeholder">◎</div>
+    {% endif %}
+    <div>
+        <h2>Welcome, {{ staff_member.name }}</h2>
+        {% if staff_member.title %}
+            <p class="staff-profile-card__role">{{ staff_member.title }}</p>
+        {% endif %}
+        {% if staff_member.email %}
+            <p class="staff-profile-card__email">{{ staff_member.email }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="stats-row" style="margin-top: 2rem">
+    <div class="stat-card">
+        <div class="stat-card__value">{{ modules|length }}</div>
+        <div class="stat-card__label">Modules I Lead</div>
+        <a href="/staff/my-modules" class="stat-card__link">View my modules →</a>
+    </div>
+    <div class="stat-card stat-card--highlight">
+        <div class="stat-card__value">{{ programmes|length }}</div>
+        <div class="stat-card__label">Programmes I Lead</div>
+        <a href="/staff/my-programmes" class="stat-card__link">View my programmes →</a>
+    </div>
+</div>
+
+{% if modules|length > 0 %}
+<div style="margin-top: 2rem">
+    <h2 style="font-size:1.1rem; font-weight:600; margin-bottom:1rem">My Modules</h2>
+    <div class="table-wrap">
+        <table class="data-table" aria-label="My modules">
+            <thead>
+                <tr>
+                    <th scope="col">Code</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Credits</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for module in modules %}
+                <tr>
+                    <td><code class="module-code">{{ module.code }}</code></td>
+                    <td>{{ module.title }}</td>
+                    <td>{{ module.credits }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+
+<div class="alert alert--error" role="alert">
+    ⚠ No staff profile is linked to your account email. Please ask an administrator to create a staff record with your email address.
+</div>
+
+{% endif %}
+
+{% endblock %}
