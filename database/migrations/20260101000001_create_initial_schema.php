@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * This file is part of the Student Course Hub project.
+ */
 declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;

@@ -1,4 +1,5 @@
 <?php
+// This file is part of PHP CS Fixer.
 
 declare(strict_types=1);
 
