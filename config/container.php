@@ -6,6 +6,7 @@ use App\Models\Database;
 use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
 
+// This file returns an array of service definitions for the dependency injection container.
 return [
 
     // Database connection (Eloquent capsule)
