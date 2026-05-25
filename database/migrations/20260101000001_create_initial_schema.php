@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
+// This migration creates the initial database schema for the Student Course Hub application, including tables for admins, staff, programmes, modules, and interests. It also sets up necessary indexes and foreign key constraints.
 final class CreateInitialSchema extends AbstractMigration
 {
     public function up(): void
