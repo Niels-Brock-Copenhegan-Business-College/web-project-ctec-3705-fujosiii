@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-
+// This controller handles all administrative functions for the Student Course Hub application, including managing programmes, modules, staff, and the mailing list. It provides methods for listing, creating, editing, and deleting these entities, as well as a dashboard overview and CSV export functionality for the mailing list.
 namespace App\Controllers;
 
 use App\Models\Admin;
