@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Slim\Factory\AppFactory;
 use DI\ContainerBuilder;
-
+// This is the main entry point for the Student Course Hub application. It sets up the environment, initializes the dependency injection container, creates the Slim app, registers middleware and routes, and runs the application.
 require __DIR__ . '/../vendor/autoload.php';
 
 // Load .env
